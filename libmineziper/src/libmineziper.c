@@ -6,11 +6,9 @@ int get_uncompressed_size(zip* in)
 {
   int size = 0;
 
-  CDH* cdh = in->cd;
-  while (cdh)
+  for (int i = 0; i < in->eocd->number_of_entries; i++)
   {
-    size += cdh->lfh->size_uncompressed_data;  // TODO overflow
-    cdh++;
+    size += in->cdh[i]->uncompressed_size;  // TODO overflow
   }
 
   return size;
