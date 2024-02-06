@@ -6,7 +6,6 @@ project(mineziper LANGUAGES C VERSION 1.0.0)
 
 # Opions
 option(BUILD_TESTS "Build test programs" OFF)
-#option(INSTALL_TTDDLL "Try to find and install ttd dll from Windbg Preview install folder" OFF)
 
 # Config
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
