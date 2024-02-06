@@ -1,0 +1,20 @@
+set(libmineziper_STATIC_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(libmineziper_STATIC_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# mineziper sources
+set(libmineziper_SRC
+	${libmineziper_STATIC_SRC}/libmineziper.c
+)
+
+set(libmineziper_INCLUDE
+	${libmineziper_STATIC_INCLUDE}/libmineziper.h
+)
+
+# Create static library
+add_library(libmineziper STATIC ${libmineziper_SRC} ${libmineziper_INCLUDE})
+
+# Include directories management
+target_include_directories(
+	libmineziper 
+	PUBLIC $<BUILD_INTERFACE:${libmineziper_STATIC_INCLUDE}> $<INSTALL_INTERFACE:include>
+)
