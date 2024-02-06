@@ -68,7 +68,8 @@ typedef struct zip
   EOCD* eocd;
 } zip;
 
-void find_cdh(raw* raw, zip* out);
+void get_eocd(raw* raw, zip* out);
+void get_cdh(raw* raw, zip* out);
 void parse_zip(char* filename, zip* out);
 
 #endif
