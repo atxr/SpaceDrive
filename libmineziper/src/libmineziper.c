@@ -1,6 +1,9 @@
 #include "libmineziper.h"
 
-bool detect_overlaps(char* filename) {}
+bool detect_overlaps(char* filename)
+{
+  return true;
+}
 
 int get_uncompressed_size(zip* in)
 {

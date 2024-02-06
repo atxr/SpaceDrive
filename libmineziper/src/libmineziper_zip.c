@@ -1,5 +1,8 @@
-#include "libmineziper_zip.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include "libmineziper_zip.h"
 
 void get_eocd(raw* raw, zip* out)
 {
@@ -11,7 +14,7 @@ void get_eocd(raw* raw, zip* out)
   {
     if (strcmp(se, EOCD_SIG) == 0)
     {
-      out->eocd = se;
+      out->eocd = (EOCD*) se;
       out->cdh = (CDH**) malloc(out->eocd->number_of_entries * sizeof(CDH*));
       break;
     }
@@ -30,7 +33,7 @@ void get_cdh(raw* raw, zip* out)
 
   out->cd = raw->buf + out->eocd->off_cdh;
 
-  CDH* cdh = out->cd;
+  CDH* cdh = (CDH*) out->cd;
   for (int i = 0; i < out->eocd->number_of_entries; i++)
   {
     out->cdh[i] = cdh;
