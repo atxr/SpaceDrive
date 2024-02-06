@@ -11,7 +11,7 @@ void find_cdh(raw* raw, zip* out)
   {
     if (strcmp(se, CDH_MB) == 0)
     {
-      zip->cdh = se;
+      out->cd = (CDH*) se;
       break;
     }
 
