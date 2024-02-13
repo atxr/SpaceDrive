@@ -41,3 +41,44 @@ void get_cdh(raw* raw, zip* out)
                   cdh->extra_field_length + cdh->file_comment_length);
   }
 }
+
+void decode_huffman_tree(char* encoded, HT* out)
+{
+  unsigned char size = *encoded;
+  if (size == 0)
+  {
+    printf("ERROR WTF");
+    // TODO
+    return;
+  }
+
+  if (size > NUM_OF_CODE)
+  {
+    printf("To many symbols");
+    // TODO
+    return;
+  }
+
+  HT tree = malloc(sizeof(HN) * size);
+  encoded++;
+
+  char code = 0;
+  char len_diff = 0;
+
+  for (int i = 0; i < size; i++)
+  {
+    tree[i].symbol = SYMBOLS[i];
+    tree[i].code = code;
+    tree[i].len = *encoded;
+
+    if (i + 1 < size)
+    {
+      // TODO WHAT IS LENDIFF IS BIG?
+      len_diff = encoded[1] - encoded[0];
+      code = (code + 1) << len_diff;
+      encoded++;
+    }
+  }
+
+  *out = tree;
+}

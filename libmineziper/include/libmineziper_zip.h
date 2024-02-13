@@ -8,6 +8,10 @@
 #define LFH_SIG           "PK\03\04"
 #define CDH_SIG           "PK\01\02"
 
+#define NUM_OF_CODE 26 * 2 + 10
+const char* SYMBOLS =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
 typedef struct raw
 {
   char* buf;
@@ -68,8 +72,17 @@ typedef struct zip
   EOCD* eocd;
 } zip;
 
+// Huffman Node and Table
+typedef struct HN
+{
+  unsigned char symbol;
+  unsigned char code;
+  unsigned char len;
+} HN, *HT;
+
 void get_eocd(raw* raw, zip* out);
 void get_cdh(raw* raw, zip* out);
 void parse_zip(char* filename, zip* out);
+void decode_huffman_tree(char* encoded, HT* out);
 
 #endif
