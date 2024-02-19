@@ -5,12 +5,14 @@ set(libmineziper_STATIC_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(libmineziper_SRC
 	${libmineziper_STATIC_SRC}/libmineziper.c
 	${libmineziper_STATIC_SRC}/libmineziper_zip.c
+	${libmineziper_STATIC_SRC}/libmineziper_huffman_tree.c
 	${libmineziper_STATIC_SRC}/libmineziper_bitstream.c
 )
 
 set(libmineziper_INCLUDE
 	${libmineziper_STATIC_INCLUDE}/libmineziper.h
 	${libmineziper_STATIC_INCLUDE}/libmineziper_zip.h
+	${libmineziper_STATIC_INCLUDE}/libmineziper_huffman_tree.h
 	${libmineziper_STATIC_INCLUDE}/libmineziper_bitstream.h
 )
 
