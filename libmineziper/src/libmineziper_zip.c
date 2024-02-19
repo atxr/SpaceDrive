@@ -16,6 +16,7 @@ void get_eocd(raw* raw, zip* out)
     {
       out->eocd = (EOCD*) se;
       out->cdh = (CDH**) malloc(out->eocd->number_of_entries * sizeof(CDH*));
+      out->lfh = (LFH**) malloc(out->eocd->number_of_entries * sizeof(LFH*));
       break;
     }
 
@@ -37,48 +38,16 @@ void get_cdh(raw* raw, zip* out)
   for (int i = 0; i < out->eocd->number_of_entries; i++)
   {
     out->cdh[i] = cdh;
+    out->lfh[i] = (LFH*) (raw->buf + cdh->off_lfh);
+
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
                   cdh->extra_field_length + cdh->file_comment_length);
   }
 }
 
-void decode_huffman_tree(char* encoded, HT* out)
+char* get_encoded_data(zip* in, int n)
 {
-  unsigned char size = *encoded;
-  if (size == 0)
-  {
-    printf("ERROR WTF");
-    // TODO
-    return;
-  }
-
-  if (size > NUM_OF_CODE)
-  {
-    printf("To many symbols");
-    // TODO
-    return;
-  }
-
-  HT tree = malloc(sizeof(HN) * size);
-  encoded++;
-
-  char code = 0;
-  char len_diff = 0;
-
-  for (int i = 0; i < size; i++)
-  {
-    tree[i].symbol = SYMBOLS[i];
-    tree[i].code = code;
-    tree[i].len = *encoded;
-
-    if (i + 1 < size)
-    {
-      // TODO WHAT IS LENDIFF IS BIG?
-      len_diff = encoded[1] - encoded[0];
-      code = (code + 1) << len_diff;
-      encoded++;
-    }
-  }
-
-  *out = tree;
+  return (char*) (in->lfh[n]) + sizeof(LFH) + in->lfh[n]->filename_length +
+         in->lfh[n]->extra_field_length;
 }
+

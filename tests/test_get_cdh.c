@@ -49,5 +49,25 @@ int main(int argc, char** argv)
     printf("\n}\n\n");
   }
 
+  printf("\n--------------------------------------------\n");
+
+  for (int i = 0; i < zip.eocd->number_of_entries; i++)
+  {
+    printf(
+        "lfh %d = {\n  sig: 0x%x\n comp size: 0x%x\n  uncomp size: 0x%x\n  "
+        "filename: ",
+        i,
+        zip.lfh[i]->sig,
+        zip.lfh[i]->compressed_size,
+        zip.lfh[i]->uncompressed_size);
+
+    for (int j = 0; j < zip.lfh[i]->filename_length; j++)
+    {
+      printf("%c", ((char*) zip.lfh[i])[sizeof(LFH) + j]);
+    }
+
+    printf("\n}\n\n");
+  }
+
   return 0;
 }

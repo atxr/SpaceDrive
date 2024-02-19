@@ -7,6 +7,7 @@
 #define EOCD_SIG          "PK\05\06"
 #define LFH_SIG           "PK\03\04"
 #define CDH_SIG           "PK\01\02"
+#define DEFLATE           8
 
 #define NUM_OF_CODE 26 * 2 + 10
 const char* SYMBOLS =
@@ -15,6 +16,7 @@ const char* SYMBOLS =
 typedef struct raw
 {
   char* buf;
+  char* stream;
   int size;
 } raw;
 
@@ -31,7 +33,6 @@ typedef struct LFH
   int uncompressed_size;
   short filename_length;
   short extra_field_length;
-  char* filename;
 } LFH;
 
 typedef struct CDH
@@ -64,11 +65,27 @@ typedef struct EOCD
   int off_cdh;
 } EOCD;
 
+// Input stream header for DEFLATE
+typedef struct ISH
+{
+  unsigned last_block : 1;
+  unsigned block_type : 2;
+} ISH;
+
+// Dynamic Huffman Code header for DEFLATE
+typedef struct DHCH
+{
+  unsigned literal_codes : 5;
+  unsigned dist_codes : 5;
+  unsigned bit_length_code : 4;
+} DHCH;
+
 typedef struct zip
 {
   // compression type
   char* cd;
   CDH** cdh;
+  LFH** lfh;
   EOCD* eocd;
 } zip;
 
@@ -78,11 +95,18 @@ typedef struct HN
   unsigned char symbol;
   unsigned char code;
   unsigned char len;
-} HN, *HT;
+} HN;
+
+typedef struct HT
+{
+  unsigned char size;
+  HN* nodes;
+} HT;
 
 void get_eocd(raw* raw, zip* out);
 void get_cdh(raw* raw, zip* out);
+char* get_encoded_data(zip* in, int n);
 void parse_zip(char* filename, zip* out);
-void decode_huffman_tree(char* encoded, HT* out);
+void deflate(zip* in);
 
 #endif
