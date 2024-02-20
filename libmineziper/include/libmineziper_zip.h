@@ -1,6 +1,8 @@
 #ifndef LIBMINEZIPER_ZIP_H
 #define LIBMINEZIPER_ZIP_H
 
+#include "libmineziper_bitstream.h"
+
 #pragma pack(1)
 
 #define START_EOCD_SEARCH 22
@@ -9,9 +11,7 @@
 #define CDH_SIG           "PK\01\02"
 #define DEFLATE           8
 
-#define NUM_OF_CODE 26 * 2 + 10
-const char* SYMBOLS =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+#define END_OF_BLOCK 256
 
 typedef struct raw
 {
@@ -108,5 +108,25 @@ void get_cdh(raw* raw, zip* out);
 char* get_encoded_data(zip* in, int n);
 void parse_zip(char* filename, zip* out);
 void deflate(zip* in);
+
+static const short length_codes[] = {
+    3,  4,  5,  6,  7,  8,  9,  10, 11,  13,  15,  17,  19,  23, 27,
+    31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258};
+
+static const char extra_bits_length_codes[] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+                                               1, 1, 2, 2, 2, 2, 3, 3, 3, 3,
+                                               4, 4, 4, 4, 5, 5, 5, 5, 0};
+
+static const int distance_codes[] = {
+    1,    2,    3,    4,    5,    7,    9,    13,    17,    25,
+    33,   49,   65,   97,   129,  193,  257,  385,   513,   769,
+    1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
+
+static const char extra_bits_distance_codes[] = {
+    0, 0, 0, 0, 1, 1, 2, 2,  3,  3,  4,  4,  5,  5,  6,
+    6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13};
+
+short decode_length_token(bitstream* bs, int token);
+int decode_distance_token(bitstream* bs, int token);
 
 #endif

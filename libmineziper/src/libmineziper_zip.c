@@ -51,3 +51,15 @@ char* get_encoded_data(zip* in, int n)
          in->lfh[n]->extra_field_length;
 }
 
+short decode_length_token(bitstream* bs, int token)
+{
+  token -= END_OF_BLOCK + 1;
+  int extra = get_bits(bs, extra_bits_length_codes[token]);
+  return length_codes[token] + extra;
+}
+
+int decode_distance_token(bitstream* bs, int token)
+{
+  int extra = get_bits(bs, extra_bits_distance_codes[token]);
+  return distance_codes[token] + extra;
+}
