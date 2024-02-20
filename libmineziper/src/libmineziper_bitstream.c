@@ -2,23 +2,22 @@
 
 #include <assert.h>
 
-char get_bits(bitstream *bs, unsigned int size)
+unsigned int get_bits(bitstream* bs, unsigned int bit_num)
 {
-  if (size > 32)
+  if (bit_num > 32)
     return -1;
 
-  if (size == 0)
+  if (bit_num == 0)
     return 0;
 
   int out;
-  if (bs->current_bit_offset + size <= 8)
+  if (bs->current_bit_offset + bit_num <= 8)
   {
-    int mask = (1 << size) - 1;
-    mask <<= bs->current_bit_offset;
+    int mask = (1 << bit_num) - 1;
 
-    out = bs->data[bs->current_data_offset] & mask;
+    out = (bs->data[bs->current_data_offset] >> bs->current_bit_offset) & mask;
 
-    bs->current_bit_offset += size;
+    bs->current_bit_offset += bit_num;
     if (bs->current_bit_offset == 8)
     {
       bs->current_bit_offset = 0;
@@ -28,8 +27,9 @@ char get_bits(bitstream *bs, unsigned int size)
   else
   {
     int diff = 8 - bs->current_bit_offset;
+    int next = (bs->current_bit_offset + bit_num) % 8;
     out = get_bits(bs, diff);
-    out += get_bits(bs, (bs->current_bit_offset + size) % 8);
+    out += get_bits(bs, next) << diff;
   }
 
   return out;
@@ -92,11 +92,23 @@ int get_bit_length(int x)
   return n;
 }
 
-void print_bits(int x, int size)
+void print_bits(int x, int bit_num)
 {
-  for (int i = size - 1; i >= 0; i--)
+  for (int i = bit_num - 1; i >= 0; i--)
   {
     printf("%c", 0b1 & (x >> i) ? '1' : '0');
   }
-  printf("(%d,%d)", x, size);
+  printf("(%d,%d)", x, bit_num);
+}
+
+bitstream init_bitstream(char* data, int size, int last_bit_offset)
+{
+  bitstream bs = {
+      .current_bit_offset = 0,
+      .current_data_offset = 0,
+      .data = data,
+      .data_size = size,
+      .last_bit_offset = last_bit_offset};
+
+  return bs;
 }

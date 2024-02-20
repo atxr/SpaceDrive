@@ -3,7 +3,7 @@
 
 typedef struct bitstream
 {
-  char *data;
+  unsigned char *data;
   int data_size;        // size of 'data' array
   int last_bit_offset;  // last bit in the stream
 
@@ -13,8 +13,9 @@ typedef struct bitstream
   int current_bit_offset;   // which bit we are currently reading/writing
 } bitstream;
 
-char get_bits(bitstream *bs, unsigned int size);
+unsigned int get_bits(bitstream *bs, unsigned int size);
 void print_bits(int x, int size);
 unsigned int reverse(unsigned int x, unsigned int numBits);
+bitstream init_bitstream(char *data, int size, int last_bit_offset);
 
 #endif
