@@ -76,7 +76,7 @@ typedef struct ISH
   unsigned last_block : 1;
   unsigned block_type : 2;
     };
-  }
+  };
 } ISH;
 
 // Dynamic Huffman Code header for DEFLATE
@@ -96,25 +96,20 @@ typedef struct zip
   EOCD* eocd;
 } zip;
 
-// Huffman Node and Table
-typedef struct HN
-{
-  unsigned char symbol;
-  unsigned char code;
-  unsigned char len;
-} HN;
-
-typedef struct HT
-{
-  unsigned char size;
-  HN* nodes;
-} HT;
-
 void get_eocd(raw* raw, zip* out);
 void get_cdh(raw* raw, zip* out);
-char* get_encoded_data(zip* in, int n);
+char* get_encoded_block(zip* in, int n);
 void parse_zip(char* filename, zip* out);
 void deflate(zip* in);
+
+
+short decode_length_token(bitstream* bs, int token);
+int decode_distance_token(bitstream* bs, int token);
+
+char* decode_type1_block(
+    bitstream* bs,
+    int uncompressed_size,
+    char* decoded_data);
 
 static const short length_codes[] = {
     3,  4,  5,  6,  7,  8,  9,  10, 11,  13,  15,  17,  19,  23, 27,
@@ -132,8 +127,5 @@ static const int distance_codes[] = {
 static const char extra_bits_distance_codes[] = {
     0, 0, 0, 0, 1, 1, 2, 2,  3,  3,  4,  4,  5,  5,  6,
     6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13};
-
-short decode_length_token(bitstream* bs, int token);
-int decode_distance_token(bitstream* bs, int token);
 
 #endif

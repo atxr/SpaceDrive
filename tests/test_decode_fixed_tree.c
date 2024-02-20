@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <strings.h>
 
 #include "libmineziper.h"
@@ -34,7 +35,7 @@ void main()
   {
     printf("BLOC %d:\n", k);
 
-    unsigned int real_size = zip.lfh[k]->uncompressed_size;
+    unsigned int uncompressed_size = zip.lfh[k]->uncompressed_size;
 
     if (zip.lfh[k]->compressed_size == 0)
     {
@@ -44,7 +45,7 @@ void main()
     {
       if (zip.cdh[k]->compression_method == DEFLATE)
       {
-        char* data = get_encoded_data(&zip, k);
+        char* data = get_encoded_block(&zip, k);
 
         bitstream bs = init_bitstream(data, 0 /*TODO WWEUWIEUWIEUWI*/, 0);
 
@@ -56,49 +57,15 @@ void main()
 
         if (deflate_header.block_type == 1)
         {
-          tree tr = build_default_tree();
-          tree tr_dist = build_default_dist_tree();
+          char* decoded_data = malloc(uncompressed_size);
 
-          char* decoded_data = malloc(real_size);
-          int i = 0;
-          int token;
-          while (i < real_size && (token = next_token(&bs, tr)) != END_OF_BLOCK)
-          {
-            if (token < END_OF_BLOCK)
-            {
-              printf("token[%d]: 0x%x\n", i, token);
-              decoded_data[i++] = token;
-            }
-
-            else
-            {
-              int length = decode_length_token(&bs, token);
-
-              if ((token = next_token(&bs, tr_dist)) == END_OF_BLOCK)
-              {
-                printf("[ERROR] Got EndOfBlock when decoding distance token\n");
-                exit(1);
-              }
-
-              int distance = decode_distance_token(&bs, token);
-
-              printf(
-                  "token[%d]: token[-%d] with length %d\n",
-                  i,
-                  distance,
-                  length);
-
-              for (int j = 0; j < length; j++)
-              {
-                decoded_data[i] = decoded_data[i - distance];
-                i++;
-              }
-            }
-          }
+          decode_type1_block(&bs, uncompressed_size, decoded_data);
 
           FILE* tmp_file = fopen("/tmp/test.txt", "w");
-          fwrite(decoded_data, 1, i, tmp_file);
+          fwrite(decoded_data, 1, uncompressed_size, tmp_file);
           fclose(tmp_file);
+
+          free(decoded_data);
         }
 
         else if (deflate_header.block_type == 2)
@@ -117,6 +84,7 @@ void main()
   }
 }
 
+/*
 void handle_type2(char* data)
 {
   DHCH* dynamic_huffman_code_header = data;
@@ -146,3 +114,4 @@ void handle_type2(char* data)
     printf("For length %d: %d\n", i, code_length[i].len);
   }
 }
+*/

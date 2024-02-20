@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "libmineziper_huffman_tree.h"
 #include "libmineziper_zip.h"
 
 void get_eocd(raw* raw, zip* out)
@@ -45,10 +46,47 @@ void get_cdh(raw* raw, zip* out)
   }
 }
 
-char* get_encoded_data(zip* in, int n)
+char* get_encoded_block(zip* in, int n)
 {
   return (char*) (in->lfh[n]) + sizeof(LFH) + in->lfh[n]->filename_length +
          in->lfh[n]->extra_field_length;
+}
+
+char* decode_type1_block(bitstream* bs, int uncompressed_size, char* decoded_data)
+{
+  tree tr = build_default_tree();
+  tree tr_dist = build_default_dist_tree();
+
+  int i = 0, token;
+  while (i < uncompressed_size && (token = next_token(bs, tr)) != END_OF_BLOCK)
+  {
+    if (token < END_OF_BLOCK)
+    {
+      printf("token[%d]: 0x%x\n", i, token);
+      decoded_data[i++] = token;
+    }
+
+    else
+    {
+      int length = decode_length_token(bs, token);
+
+      if ((token = next_token(bs, tr_dist)) == END_OF_BLOCK)
+      {
+        printf("[ERROR] Got EndOfBlock when decoding distance token\n");
+        exit(1);
+      }
+
+      int distance = decode_distance_token(bs, token);
+
+      printf("token[%d]: token[-%d] with length %d\n", i, distance, length);
+
+      for (int j = 0; j < length; j++)
+      {
+        decoded_data[i] = decoded_data[i - distance];
+        i++;
+      }
+    }
+  }
 }
 
 short decode_length_token(bitstream* bs, int token)
