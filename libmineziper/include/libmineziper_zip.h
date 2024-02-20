@@ -68,8 +68,15 @@ typedef struct EOCD
 // Input stream header for DEFLATE
 typedef struct ISH
 {
+  union
+  {
+    int raw;
+    struct
+    {
   unsigned last_block : 1;
   unsigned block_type : 2;
+    };
+  }
 } ISH;
 
 // Dynamic Huffman Code header for DEFLATE
