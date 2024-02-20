@@ -3,6 +3,9 @@
 
 #include "libmineziper_bitstream.h"
 
+#define DEFAULT_TREE_SIZE 288
+#define DEFAULT_DIST_TREE_SIZE 32
+
 typedef struct leaf
 {
   int code;
@@ -21,5 +24,6 @@ unsigned int* sort(unsigned char* ints, int size);
 void print_huffman_tree(tree t);
 tree build_tree(char* bit_lengths, int size);
 tree build_default_tree();
+tree build_default_dist_tree();
 
 #endif

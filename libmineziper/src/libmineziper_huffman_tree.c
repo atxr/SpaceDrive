@@ -44,9 +44,8 @@ tree build_tree(char* bit_lenghts, int size)
 
 tree build_default_tree()
 {
-  char bit_lengths[288];
-
-  for (int i = 0; i < 288; i++)
+  char bit_lengths[DEFAULT_TREE_SIZE];
+  for (int i = 0; i < DEFAULT_TREE_SIZE; i++)
   {
     if (i < 144 || i >= 280)
       bit_lengths[i] = 8;
@@ -58,7 +57,18 @@ tree build_default_tree()
       bit_lengths[i] = 7;
   }
 
-  return build_tree(bit_lengths, 288);
+  return build_tree(bit_lengths, DEFAULT_TREE_SIZE);
+}
+
+tree build_default_dist_tree()
+{
+  char bit_lengths[DEFAULT_DIST_TREE_SIZE];
+  for (int i = 0; i < DEFAULT_DIST_TREE_SIZE; i++)
+  {
+    bit_lengths[i] = 5;
+  }
+
+  return build_tree(bit_lengths, DEFAULT_DIST_TREE_SIZE);
 }
 
 unsigned int* sort(unsigned char* ints, int size)
