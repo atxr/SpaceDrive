@@ -3,3 +3,6 @@ target_link_libraries(test_get_cdh PUBLIC libmineziper)
 
 add_executable(test_decode_huffman_tree ${CMAKE_CURRENT_SOURCE_DIR}/test_decode_huffman_tree.c)
 target_link_libraries(test_decode_huffman_tree PUBLIC libmineziper)
+
+add_executable(test_decode_fixed_tree ${CMAKE_CURRENT_SOURCE_DIR}/test_decode_fixed_tree.c)
+target_link_libraries(test_decode_fixed_tree PUBLIC libmineziper)
