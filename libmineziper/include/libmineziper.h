@@ -8,6 +8,5 @@
 
 bool detect_overlaps(char* filename);
 int get_uncompressed_size(zip* in);
-int next_token(bitstream* bs, tree t);
 
 #endif
