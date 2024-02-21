@@ -143,6 +143,21 @@ char* decode_type1_block_v2(
   }
 }
 
+int get_number_bit_length_code(DHCH* dhch)
+{
+  return (dhch->bit_length_code & 0b1111) + 4;
+}
+
+int get_number_dist_code(DHCH* dhch)
+{
+  return (dhch->dist_codes & 0b11111) + 1;
+}
+
+int get_number_litteral_code(DHCH* dhch)
+{
+  return (dhch->literal_codes & 0b11111) + 257;
+}
+
 short decode_length_token(bitstream* bs, int token)
 {
   token -= END_OF_BLOCK + 1;

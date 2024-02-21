@@ -66,8 +66,8 @@ typedef struct ISH
     int raw;
     struct
     {
-  unsigned last_block : 1;
-  unsigned block_type : 2;
+      unsigned last_block : 1;
+      unsigned block_type : 2;
     };
   };
 } ISH;
@@ -98,6 +98,9 @@ void get_cdh(zip* out);
 char* get_encoded_block(zip* in, int n);
 void deflate(zip* in);
 
+int get_number_bit_length_code(DHCH* dhch);
+int get_number_dist_code(DHCH* dhch);
+int get_number_litteral_code(DHCH* dhch);
 
 short decode_length_token(bitstream* bs, int token);
 int decode_distance_token(bitstream* bs, int token);
