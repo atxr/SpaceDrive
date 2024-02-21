@@ -14,15 +14,12 @@ int main(int argc, char** argv)
   }
 
   char buf[BUF_SIZE + 1];
-  zip zip;
-  raw raw;
-
-  raw.size = fread(buf, 1, BUF_SIZE, stream);
+  int read_size = fread(buf, 1, BUF_SIZE, stream);
   buf[BUF_SIZE] = '\0';
-  raw.buf = buf;
 
-  get_eocd(&raw, &zip);
-  get_cdh(&raw, &zip);
+  zip zip;
+  get_eocd(buf, read_size, &zip);
+  get_cdh(buf, &zip);
 
   printf(
       "eocd = {\n  nb of entry: %x\n  off cd: %d\n  size cd: 0x%x\n}\n",

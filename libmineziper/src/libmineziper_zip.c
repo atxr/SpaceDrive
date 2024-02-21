@@ -5,13 +5,13 @@
 #include "libmineziper_huffman_tree.h"
 #include "libmineziper_zip.h"
 
-void get_eocd(raw* raw, zip* out)
+void get_eocd(char* data, int size, zip* out)
 {
-  if (raw->size < START_EOCD_SEARCH)
+  if (size < START_EOCD_SEARCH)
     return;
 
-  char* se = raw->buf + raw->size - START_EOCD_SEARCH;
-  while (se > raw->buf)
+  char* se = &data[size - START_EOCD_SEARCH];
+  while (se > data)
   {
     if (strcmp(se, EOCD_SIG) == 0)
     {
@@ -25,7 +25,7 @@ void get_eocd(raw* raw, zip* out)
   }
 }
 
-void get_cdh(raw* raw, zip* out)
+void get_cdh(char* data, zip* out)
 {
   if (out->eocd == 0 || out->eocd->off_cdh == 0)
   {
@@ -33,13 +33,13 @@ void get_cdh(raw* raw, zip* out)
     exit(-1);
   }
 
-  out->cd = raw->buf + out->eocd->off_cdh;
+  out->cd = data + out->eocd->off_cdh;
 
   CDH* cdh = (CDH*) out->cd;
   for (int i = 0; i < out->eocd->number_of_entries; i++)
   {
     out->cdh[i] = cdh;
-    out->lfh[i] = (LFH*) (raw->buf + cdh->off_lfh);
+    out->lfh[i] = (LFH*) (data + cdh->off_lfh);
 
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
                   cdh->extra_field_length + cdh->file_comment_length);
@@ -62,7 +62,6 @@ char* decode_type1_block(bitstream* bs, int uncompressed_size, char* decoded_dat
   {
     if (token < END_OF_BLOCK)
     {
-      printf("token[%d]: 0x%x\n", i, token);
       decoded_data[i++] = token;
     }
 
@@ -77,8 +76,6 @@ char* decode_type1_block(bitstream* bs, int uncompressed_size, char* decoded_dat
       }
 
       int distance = decode_distance_token(bs, token);
-
-      printf("token[%d]: token[-%d] with length %d\n", i, distance, length);
 
       for (int j = 0; j < length; j++)
       {

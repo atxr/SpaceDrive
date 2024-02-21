@@ -20,22 +20,19 @@ void main()
   }
 
   char buf[BUF_SIZE + 1];
-  zip zip;
-  raw raw;
-
-  raw.size = fread(buf, 1, BUF_SIZE, stream);
+  int read_size = fread(buf, 1, BUF_SIZE, stream);
   buf[BUF_SIZE] = '\0';
-  raw.buf = buf;
-  raw.stream = buf;
 
-  get_eocd(&raw, &zip);
-  get_cdh(&raw, &zip);
+  zip zip;
+  get_eocd(buf, read_size, &zip);
+  get_cdh(buf, &zip);
 
   for (int k = 0; k < zip.eocd->number_of_entries; k++)
   {
     printf("BLOC %d:\n", k);
 
     unsigned int uncompressed_size = zip.lfh[k]->uncompressed_size;
+    printf("UNCOMPRESSED SIZE: 0x%x\n", uncompressed_size);
 
     if (zip.lfh[k]->compressed_size == 0)
     {

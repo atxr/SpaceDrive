@@ -13,13 +13,6 @@
 
 #define END_OF_BLOCK 256
 
-typedef struct raw
-{
-  char* buf;
-  char* stream;
-  int size;
-} raw;
-
 typedef struct LFH
 {
   int sig;  // LFH_SIG "PK\03\04"
@@ -96,8 +89,8 @@ typedef struct zip
   EOCD* eocd;
 } zip;
 
-void get_eocd(raw* raw, zip* out);
-void get_cdh(raw* raw, zip* out);
+void get_eocd(char* data, int size, zip* out);
+void get_cdh(char* data, zip* out);
 char* get_encoded_block(zip* in, int n);
 void parse_zip(char* filename, zip* out);
 void deflate(zip* in);
