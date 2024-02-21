@@ -82,19 +82,20 @@ typedef struct DHCH
 
 typedef struct zip
 {
-  // compression type
+  char* start;
+  unsigned int size;
+
   char* cd;
-  CDH** cdh;
-  LFH** lfh;
   unsigned int* lfh_off;
   unsigned int entries;
   EOCD* eocd;
 } zip;
 
-void get_eocd(char* data, int size, zip* out);
-void get_cdh(char* data, zip* out);
+zip init_zip(char* data, int size);
+void get_eocd(zip* out);
+void get_cdh(zip* out);
+
 char* get_encoded_block(zip* in, int n);
-void parse_zip(char* filename, zip* out);
 void deflate(zip* in);
 
 

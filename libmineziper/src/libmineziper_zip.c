@@ -5,28 +5,36 @@
 #include "libmineziper_huffman_tree.h"
 #include "libmineziper_zip.h"
 
-void get_eocd(char* data, int size, zip* out)
+zip init_zip(char* data, int size)
 {
-  if (size < START_EOCD_SEARCH)
+  zip z = {.start = data, .size = size};
+
+  get_eocd(&z);
+  get_cdh(&z);
+
+  return z;
+}
+
+void get_eocd(zip* z)
+{
+  if (z->size < START_EOCD_SEARCH)
     return;
 
-  char* se = &data[size - START_EOCD_SEARCH];
-  while (se > data)
+  char* se = &z->start[z->size - START_EOCD_SEARCH];
+  while (se > z->start)
   {
     if (strcmp(se, EOCD_SIG) == 0)
     {
-      out->eocd = (EOCD*) se;
-      out->entries = out->eocd->number_of_entries;
+      z->eocd = (EOCD*) se;
+      z->entries = z->eocd->number_of_entries;
 
-      out->cdh = (CDH**) malloc(out->entries * sizeof(CDH*));
-      out->lfh = (LFH**) malloc(out->entries * sizeof(LFH*));
-      out->lfh_off = malloc(out->entries * sizeof(int));
+      z->lfh_off = malloc(z->entries * sizeof(int));
 
-      if (!out->cdh || !out->lfh || !out->lfh_off)
+      if (!z->lfh_off)
       {
         printf(
             "[ERROR] Failed to allocate CDH/LFH buffer for %d entries\n",
-            out->entries);
+            z->entries);
         exit(1);
       }
 
@@ -37,23 +45,20 @@ void get_eocd(char* data, int size, zip* out)
   }
 }
 
-void get_cdh(char* data, zip* out)
+void get_cdh(zip* z)
 {
-  if (out->eocd == 0 || out->eocd->off_cdh == 0)
+  if (z->eocd == 0 || z->eocd->off_cdh == 0)
   {
-    printf("<get_cdh> error: No EOCD found.\n");
+    fprintf(stderr, "[ERROR]: No EOCD found when fetching CDH.\n");
     exit(-1);
   }
 
-  out->cd = data + out->eocd->off_cdh;
+  z->cd = z->start + z->eocd->off_cdh;
 
-  CDH* cdh = (CDH*) out->cd;
-  for (int i = 0; i < out->eocd->number_of_entries; i++)
+  CDH* cdh = (CDH*) z->cd;
+  for (int i = 0; i < z->eocd->number_of_entries; i++)
   {
-    out->cdh[i] = cdh;
-    out->lfh[i] = (LFH*) (data + cdh->off_lfh);
-
-    out->lfh_off[i] = cdh->off_lfh;
+    z->lfh_off[i] = cdh->off_lfh;
 
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
                   cdh->extraf_length + cdh->file_comment_length);
@@ -62,8 +67,9 @@ void get_cdh(char* data, zip* out)
 
 char* get_encoded_block(zip* in, int n)
 {
-  return (char*) (in->lfh[n]) + sizeof(LFH) + in->lfh[n]->filename_length +
-         in->lfh[n]->extraf_length;
+  LFH* lfh = &in->start[in->lfh_off[n]];
+  return in->start + in->lfh_off[n] + sizeof(LFH) + lfh->filename_length +
+         lfh->extraf_length;
 }
 
 char* decode_type1_block_vuln(bitstream* bs, char* decoded_data)

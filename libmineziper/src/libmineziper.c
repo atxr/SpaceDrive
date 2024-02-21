@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "libmineziper.h"
 
@@ -12,9 +14,10 @@ int get_uncompressed_size(zip* in)
 {
   int size = 0;
 
-  for (int i = 0; i < in->eocd->number_of_entries; i++)
+  for (int i = 0; i < in->entries; i++)
   {
-    size += in->cdh[i]->uncompressed_size;  // TODO overflow
+    LFH* lfh = &in->start[in->lfh_off[i]];
+    size += lfh->uncompressed_size;
   }
 
   return size;
@@ -22,13 +25,11 @@ int get_uncompressed_size(zip* in)
 
 bool scan_zip(char* zip_data, int zip_size)
 {
-  zip zip;
-  get_eocd(zip_data, zip_size, &zip);
-  get_cdh(zip_data, &zip);
+  zip zip = init_zip(zip_data, zip_size);
 
   for (int i = 0; i < zip.entries; i++)
   {
-    LFH* lfh = &zip_data[zip.lfh_off[i]];
+    LFH* lfh = &zip.start[zip.lfh_off[i]];
 
     if (lfh->compression_method == DEFLATE)
     {
@@ -72,8 +73,7 @@ bool scan_zip(char* zip_data, int zip_size)
         fprintf(stderr, "[FILE %d] Error in compressed data\n", i);
       }
 
-#include <string.h>
-      if (strcmp("VIRUS", decoded_data) == NULL)
+      if (strcmp("VIRUS", decoded_data) == 0)
       {
         printf("-> VIRUS FOUND\n");
         return true;

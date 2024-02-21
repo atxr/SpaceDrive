@@ -27,24 +27,24 @@ void main(int argc, char** argv)
   int read_size = fread(buf, 1, BUF_SIZE, stream);
   buf[BUF_SIZE] = '\0';
 
-  zip zip;
-  get_eocd(buf, read_size, &zip);
-  get_cdh(buf, &zip);
+  zip zip = init_zip(buf, read_size);
 
   for (int k = 0; k < zip.eocd->number_of_entries; k++)
   {
     printf("BLOC %d:\n", k);
 
-    unsigned int uncompressed_size = zip.lfh[k]->uncompressed_size;
+    LFH* lfh = &zip.start[zip.lfh_off[k]];
+
+    unsigned int uncompressed_size = lfh->uncompressed_size;
     printf("UNCOMPRESSED SIZE: 0x%x\n", uncompressed_size);
 
-    if (zip.lfh[k]->compressed_size == 0)
+    if (lfh->compressed_size == 0)
     {
       printf("Empty bloc\n");
     }
     else
     {
-      if (zip.cdh[k]->compression_method == DEFLATE)
+      if (lfh->compression_method == DEFLATE)
       {
         char* data = get_encoded_block(&zip, k);
 
