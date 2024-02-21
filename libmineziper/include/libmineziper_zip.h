@@ -86,6 +86,8 @@ typedef struct zip
   char* cd;
   CDH** cdh;
   LFH** lfh;
+  unsigned int* lfh_off;
+  unsigned int entries;
   EOCD* eocd;
 } zip;
 

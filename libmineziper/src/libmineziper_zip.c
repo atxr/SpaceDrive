@@ -16,8 +16,20 @@ void get_eocd(char* data, int size, zip* out)
     if (strcmp(se, EOCD_SIG) == 0)
     {
       out->eocd = (EOCD*) se;
-      out->cdh = (CDH**) malloc(out->eocd->number_of_entries * sizeof(CDH*));
-      out->lfh = (LFH**) malloc(out->eocd->number_of_entries * sizeof(LFH*));
+      out->entries = out->eocd->number_of_entries;
+
+      out->cdh = (CDH**) malloc(out->entries * sizeof(CDH*));
+      out->lfh = (LFH**) malloc(out->entries * sizeof(LFH*));
+      out->lfh_off = malloc(out->entries * sizeof(int));
+
+      if (!out->cdh || !out->lfh || !out->lfh_off)
+      {
+        printf(
+            "[ERROR] Failed to allocate CDH/LFH buffer for %d entries\n",
+            out->entries);
+        exit(1);
+      }
+
       break;
     }
 
@@ -40,6 +52,8 @@ void get_cdh(char* data, zip* out)
   {
     out->cdh[i] = cdh;
     out->lfh[i] = (LFH*) (data + cdh->off_lfh);
+
+    out->lfh_off[i] = cdh->off_lfh;
 
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
                   cdh->extraf_length + cdh->file_comment_length);
