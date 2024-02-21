@@ -8,11 +8,15 @@
 
 #define BUF_SIZE 0xfffff
 
-void main()
+void main(int argc, char** argv)
 {
-  char* filename = "x.zip";
+  if (argc != 2)
+  {
+    printf("NEED ONE FILE TO PROCESS\n");
+    exit(1);
+  }
 
-  FILE* stream = fopen(filename, "r");
+  FILE* stream = fopen(argv[1], "r");
   if (stream == NULL)
   {
     fprintf(stderr, "Cannot open file for writing\n");
@@ -56,11 +60,15 @@ void main()
         {
           char* decoded_data = malloc(uncompressed_size);
 
-          decode_type1_block(&bs, uncompressed_size, decoded_data);
+          decode_type1_block_vuln(&bs, decoded_data);
+          // decode_type1_block_v1(&bs, uncompressed_size, decoded_data);
 
-          FILE* tmp_file = fopen("/tmp/test.txt", "w");
+          char* path = "/tmp/minezipper_data";
+          FILE* tmp_file = fopen(path, "w");
           fwrite(decoded_data, 1, uncompressed_size, tmp_file);
           fclose(tmp_file);
+
+          printf("Unzipped in %s\n", path);
 
           free(decoded_data);
         }

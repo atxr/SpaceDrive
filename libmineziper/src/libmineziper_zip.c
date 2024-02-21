@@ -42,17 +42,54 @@ void get_cdh(char* data, zip* out)
     out->lfh[i] = (LFH*) (data + cdh->off_lfh);
 
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
-                  cdh->extra_field_length + cdh->file_comment_length);
+                  cdh->extraf_length + cdh->file_comment_length);
   }
 }
 
 char* get_encoded_block(zip* in, int n)
 {
   return (char*) (in->lfh[n]) + sizeof(LFH) + in->lfh[n]->filename_length +
-         in->lfh[n]->extra_field_length;
+         in->lfh[n]->extraf_length;
 }
 
-char* decode_type1_block(bitstream* bs, int uncompressed_size, char* decoded_data)
+char* decode_type1_block_vuln(bitstream* bs, char* decoded_data)
+{
+  tree tr = build_default_tree();
+  tree tr_dist = build_default_dist_tree();
+
+  int i = 0, token;
+  while ((token = next_token(bs, tr)) != END_OF_BLOCK)
+  {
+    if (token < END_OF_BLOCK)
+    {
+      decoded_data[i++] = token;
+    }
+
+    else
+    {
+      int length = decode_length_token(bs, token);
+
+      if ((token = next_token(bs, tr_dist)) == END_OF_BLOCK)
+      {
+        printf("[ERROR] Got EndOfBlock when decoding distance token\n");
+        exit(1);
+      }
+
+      int distance = decode_distance_token(bs, token);
+
+      for (int j = 0; j < length; j++)
+      {
+        decoded_data[i] = decoded_data[i - distance];
+        i++;
+      }
+    }
+  }
+}
+
+char* decode_type1_block_v2(
+    bitstream* bs,
+    int uncompressed_size,
+    char* decoded_data)
 {
   tree tr = build_default_tree();
   tree tr_dist = build_default_dist_tree();

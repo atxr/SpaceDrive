@@ -25,7 +25,7 @@ typedef struct LFH
   int compressed_size;
   int uncompressed_size;
   short filename_length;
-  short extra_field_length;
+  short extraf_length;
 } LFH;
 
 typedef struct CDH
@@ -41,7 +41,7 @@ typedef struct CDH
   int compressed_size;
   int uncompressed_size;
   short filename_length;
-  short extra_field_length;
+  short extraf_length;
   short file_comment_length;
   short disk_number_start;
   short internal_file_attributes;
@@ -99,7 +99,8 @@ void deflate(zip* in);
 short decode_length_token(bitstream* bs, int token);
 int decode_distance_token(bitstream* bs, int token);
 
-char* decode_type1_block(
+char* decode_type1_block_vuln(bitstream* bs, char* decoded_data);
+char* decode_type1_block_v2(
     bitstream* bs,
     int uncompressed_size,
     char* decoded_data);
