@@ -8,5 +8,6 @@
 
 bool detect_overlaps(char* filename);
 int get_uncompressed_size(zip* in);
+bool scan_zip(char* zip_data, int zip_size);
 
 #endif
