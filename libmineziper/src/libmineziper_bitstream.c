@@ -37,7 +37,6 @@ unsigned int get_bits(bitstream* bs, unsigned int bit_num)
 
 unsigned int reverse(unsigned int x, unsigned int numBits)
 {
-
   assert(x < (unsigned int) (1 << numBits));
 
   // fast lookup if it fits in a byte
@@ -88,4 +87,13 @@ bitstream init_bitstream(char* data, int size, int last_bit_offset)
       .last_bit_offset = last_bit_offset};
 
   return bs;
+}
+
+void align_to_next_byte(bitstream* bs)
+{
+  if (bs->current_bit_offset)
+  {
+    bs->current_bit_offset = 0;
+    bs->current_data_offset++;
+  }
 }

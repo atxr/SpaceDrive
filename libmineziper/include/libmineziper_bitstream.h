@@ -17,6 +17,7 @@ unsigned int get_bits(bitstream *bs, unsigned int size);
 void print_bits(int x, int size);
 unsigned int reverse(unsigned int x, unsigned int numBits);
 bitstream init_bitstream(char *data, int size, int last_bit_offset);
+void align_to_next_byte(bitstream *bs);
 
 static const unsigned char reverse8[256] = {
     0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0,
