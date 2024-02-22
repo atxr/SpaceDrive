@@ -29,8 +29,9 @@ void get_eocd(zip* z)
       z->entries = z->eocd->number_of_entries;
 
       z->lfh_off = malloc(z->entries * sizeof(int));
+      z->cdh_filename_length = malloc(z->entries * sizeof(int));
 
-      if (!z->lfh_off)
+      if (!z->lfh_off || !z->cdh_filename_length)
       {
         printf(
             "[ERROR] Failed to allocate CDH/LFH buffer for %d entries\n",
@@ -59,17 +60,11 @@ void get_cdh(zip* z)
   for (int i = 0; i < z->eocd->number_of_entries; i++)
   {
     z->lfh_off[i] = cdh->off_lfh;
+    z->cdh_filename_length[i] = cdh->filename_length;
 
     cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
                   cdh->extraf_length + cdh->file_comment_length);
   }
-}
-
-char* get_encoded_block(zip* in, int n)
-{
-  LFH* lfh = &in->start[in->lfh_off[n]];
-  return in->start + in->lfh_off[n] + sizeof(LFH) + lfh->filename_length +
-         lfh->extraf_length;
 }
 
 char* decode_type1_block_vuln(bitstream* bs, char* decoded_data)

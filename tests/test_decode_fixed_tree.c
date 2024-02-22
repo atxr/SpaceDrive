@@ -46,7 +46,8 @@ void main(int argc, char** argv)
     {
       if (lfh->compression_method == DEFLATE)
       {
-        char* data = get_encoded_block(&zip, k);
+        char* data = ((char*) lfh) + sizeof(LFH) + lfh->filename_length +
+                     lfh->extraf_length;
 
         bitstream bs = init_bitstream(data, 0 /*TODO WWEUWIEUWIEUWI*/, 0);
 

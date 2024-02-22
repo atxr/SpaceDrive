@@ -85,18 +85,17 @@ typedef struct zip
   char* start;
   unsigned int size;
 
+  unsigned short entries;
+
   char* cd;
-  unsigned int* lfh_off;
-  unsigned int entries;
   EOCD* eocd;
+  unsigned int* lfh_off;
+  unsigned int* cdh_filename_length;
 } zip;
 
 zip init_zip(char* data, int size);
 void get_eocd(zip* out);
 void get_cdh(zip* out);
-
-char* get_encoded_block(zip* in, int n);
-void deflate(zip* in);
 
 int get_number_bit_length_code(DHCH* dhch);
 int get_number_dist_code(DHCH* dhch);
