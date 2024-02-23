@@ -9,7 +9,8 @@
 #define EOCD_SIG          "PK\05\06"
 #define LFH_SIG           "PK\03\04"
 #define CDH_SIG           "PK\01\02"
-#define DEFLATE           8
+#define COMP_NONE         0
+#define COMP_DEFLATE      8
 
 #define END_OF_BLOCK 256
 

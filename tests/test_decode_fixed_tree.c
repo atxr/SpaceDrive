@@ -44,7 +44,7 @@ void main(int argc, char** argv)
     }
     else
     {
-      if (lfh->compression_method == DEFLATE)
+      if (lfh->compression_method == COMP_DEFLATE)
       {
         char* data = ((char*) lfh) + sizeof(LFH) + lfh->filename_length +
                      lfh->extraf_length;
