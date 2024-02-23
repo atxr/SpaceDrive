@@ -20,7 +20,8 @@ typedef struct tree
   unsigned int min, max;
 } tree;
 
-unsigned int* sort(unsigned char* ints, int size);
+unsigned short* sort_char(const unsigned char* arr, int size);
+unsigned int* sort_int(const unsigned int* arr, int size);
 void print_huffman_tree(tree t);
 
 tree build_tree(char* bit_lengths, int size);

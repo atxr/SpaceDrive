@@ -1,12 +1,15 @@
 #include "libmineziper_huffman_tree.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 tree build_tree(char* bit_lenghts, int size)
 {
-  unsigned int* order_codes = sort(bit_lenghts, size);
+  assert(size < 0x10000);
+
+  unsigned short* order_codes = sort_char(bit_lenghts, size);
 
   tree out;
   out.size = size;
@@ -17,8 +20,8 @@ tree build_tree(char* bit_lenghts, int size)
   int code = 0;
   int code_incr = 0;
   int last_bit_length = 0;
-  int i = 0;
-  int len_bit, j;
+  short i = 0;
+  unsigned short len_bit, j;
 
   while (i < size)
   {
@@ -71,20 +74,46 @@ tree build_default_dist_tree()
   return build_tree(bit_lengths, DEFAULT_DIST_TREE_SIZE);
 }
 
-unsigned int* sort(unsigned char* ints, int size)
+unsigned short* sort_char(const unsigned char* arr, int size)
 {
   unsigned char MAX = 0xff;
 
-  unsigned int* out = malloc(sizeof(int) * size);
+  unsigned short* out = malloc(sizeof(int) * size);
   unsigned char* buf = malloc(size);
-  memcpy(buf, ints, sizeof(char) * size);
+  memcpy(buf, arr, sizeof(char) * size);
+
+  for (short k = 0; k < size; k++)
+  {
+    int min = 0;
+    for (short i = 0; i < size; i++)
+    {
+      if (buf[min] == MAX || buf[i] < arr[min])
+      {
+        min = i;
+      }
+    }
+    buf[min] = MAX;
+    out[k] = min;
+  }
+
+  free(buf);
+  return out;
+}
+
+unsigned int* sort_int(const unsigned int* arr, int size)
+{
+  unsigned int MAX = 0xffffffff;
+
+  unsigned int* out = malloc(sizeof(int) * size);
+  unsigned int* buf = malloc(sizeof(int) * size);
+  memcpy(buf, arr, sizeof(int) * size);
 
   for (int k = 0; k < size; k++)
   {
     int min = 0;
     for (int i = 0; i < size; i++)
     {
-      if (buf[min] == MAX || buf[i] < ints[min])
+      if (buf[min] == MAX || buf[i] < arr[min])
       {
         min = i;
       }
