@@ -160,3 +160,8 @@ int next_token(bitstream* bs, tree t)
 
   return -1;
 }
+
+void free_tree(tree t)
+{
+  free(t.leaves);
+}

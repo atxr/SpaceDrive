@@ -99,6 +99,9 @@ char* decode_type1_block_vuln(bitstream* bs, char* decoded_data)
       }
     }
   }
+
+  free_tree(tr);
+  free_tree(tr_dist);
 }
 
 char* decode_type1_block_v2(
@@ -164,4 +167,10 @@ int decode_distance_token(bitstream* bs, int token)
 {
   int extra = get_bits(bs, extra_bits_distance_codes[token]);
   return distance_codes[token] + extra;
+}
+
+void free_zip(zip z)
+{
+  free(z.cdh_filename_length);
+  free(z.lfh_off);
 }

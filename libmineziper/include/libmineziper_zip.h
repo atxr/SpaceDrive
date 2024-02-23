@@ -94,6 +94,8 @@ typedef struct zip
 } zip;
 
 zip init_zip(char* data, int size);
+void free_zip(zip z);
+
 void get_eocd(zip* out);
 void get_cdh(zip* out);
 

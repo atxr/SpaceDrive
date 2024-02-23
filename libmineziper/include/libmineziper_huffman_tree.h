@@ -27,6 +27,7 @@ void print_huffman_tree(tree t);
 tree build_tree(char* bit_lengths, int size);
 tree build_default_tree();
 tree build_default_dist_tree();
+void free_tree(tree t);
 
 int next_token(bitstream* bs, tree t);
 
