@@ -46,6 +46,7 @@ int main()
     whether we're the parent or the child. */
     if (fork() == 0)
     {
+      printf("---------------\nConnection received..\n");
       // Get size of buffer
       unsigned int read_size;
       read(client_sockfd, &read_size, sizeof(int));
@@ -58,10 +59,20 @@ int main()
         exit(1);
       }
 
-      unsigned int crc = xcrc32(buffer, read_size, -1);
-      bool scan_result = scan_zip(buffer, read_size);
+      read(client_sockfd, buffer, read_size);
+      // TODO WHAT IF WE READ LESS THAN READ_SIZE
+      // DO I NEED A LOOP?
 
-      write(client_sockfd, &crc, sizeof(crc));
+      BYTE hash[SHA256_BLOCK_SIZE];
+      SHA256_CTX ctx;
+      sha256_init(&ctx);
+      sha256_update(&ctx, buffer, read_size);
+      sha256_final(&ctx, hash);
+
+      bool scan_result = scan_zip(buffer, read_size);
+      printf("Scan finished\n---------------\n");
+
+      write(client_sockfd, &hash, SHA256_BLOCK_SIZE);
       write(client_sockfd, &scan_result, sizeof(scan_result));
 
       close(client_sockfd);
