@@ -7,6 +7,7 @@ set(libmineziper_SRC
 	${libmineziper_STATIC_SRC}/libmineziper_zip.c
 	${libmineziper_STATIC_SRC}/libmineziper_huffman_tree.c
 	${libmineziper_STATIC_SRC}/libmineziper_bitstream.c
+	${libmineziper_STATIC_SRC}/libmineziper_crypto.c
 )
 
 set(libmineziper_INCLUDE
@@ -14,6 +15,7 @@ set(libmineziper_INCLUDE
 	${libmineziper_STATIC_INCLUDE}/libmineziper_zip.h
 	${libmineziper_STATIC_INCLUDE}/libmineziper_huffman_tree.h
 	${libmineziper_STATIC_INCLUDE}/libmineziper_bitstream.h
+	${libmineziper_STATIC_INCLUDE}/libmineziper_crypto.h
 )
 
 # Create static library
