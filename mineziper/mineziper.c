@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
   if (scan_zip(buf, read_size))
   {
-    printf("[ERROR] Cannot upload file, potential virus detected\n");
+    fprintf(stderr, "[ERROR] Cannot upload file, potential virus detected\n");
   }
   else
   {

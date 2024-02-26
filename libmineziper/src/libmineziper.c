@@ -56,7 +56,7 @@ bool scan_decoded_files(zip zip)
     // Verify CDH/LFH parsed sizes to avoid undefined behavior
     if (lfh->filename_length != zip.cdh_filename_length[i])
     {
-      printf("[ERROR] Mismatch in CDH/LFH filename lengths.\n");
+      fprintf(stderr, "[ERROR] Mismatch in CDH/LFH filename lengths.\n");
       return true;
     }
 
