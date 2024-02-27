@@ -1,15 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>Satellite File Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
 </head>
+
 <body>
-    <h1>File Upload</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
-    </form>
+    <div class="container">
+        <h1>Satellite File Upload</h1>
+        <p>Welcome to the Satellite File Upload portal. This portal allows you to securely upload files to our satellite
+            systems orbiting Earth.</p>
+        <p>Our satellites are equipped with advanced sensors and instruments that collect various types of data,
+            including weather patterns, environmental changes, and astronomical observations. To ensure the smooth
+            operation of these satellites, it's essential to regularly upload firmware updates, configuration files, and
+            scientific data.</p>
+        <p>Using this portal, you can securely transmit files to our satellites from anywhere on Earth. Once uploaded,
+            our satellite communication systems will process and integrate the data seamlessly into our satellite
+            networks.</p>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" placeholder="Choose file">
+            <input type="submit" value="Upload">
+            <p class="note">Note: Submitted files will be scanned to detect malicious patterns. Our team has developed a
+                specific tool to scan zip files.</p>
+
+        </form>
+        <div class="message" id="message"></div>
+    </div>
 </body>
+
 </html>
