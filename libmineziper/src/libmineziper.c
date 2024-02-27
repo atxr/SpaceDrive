@@ -56,8 +56,21 @@ bool scan_decoded_files(zip zip)
     // Verify CDH/LFH parsed sizes to avoid undefined behavior
     if (lfh->filename_length != zip.cdh_filename_length[i])
     {
-      fprintf(stderr, "[ERROR] Mismatch in CDH/LFH filename lengths.\n");
-      return true;
+      fprintf(
+          stderr,
+          "[ERROR] Mismatch in CDH/LFH filename lengths. Local file might be "
+          "malformed.\nSkipping file...\n");
+      continue;
+    }
+
+    for (int k = 0; k < blocklist_size; k++)
+    {
+      char* filename = zip.start + zip.lfh_off[i] + sizeof(LFH);
+      if (strcmp(blocklist[k], filename) == 0)
+      {
+        fprintf(stderr, "[ERROR] Forbidden filename found in zip archive.\n");
+        return true;
+      }
     }
 
     data* decoded = malloc(sizeof(data));

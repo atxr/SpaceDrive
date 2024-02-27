@@ -21,6 +21,10 @@ bool detect_overlaps(zip zip);
 bool scan_decoded_files(zip zip);
 bool scan_zip(char* zip_data, int zip_size);
 
+// todo complete this list
+static const char* blocklist[] = {"Mimikatz.exe", "linpeas.sh", "winPEAS.bat"};
+static const int blocklist_size = sizeof(blocklist) / sizeof(char*);
+
 static const char* sigs[] = {
     "\x7f"
     "ELF",
