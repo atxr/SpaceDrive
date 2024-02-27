@@ -33,7 +33,7 @@ void main(int argc, char** argv)
   {
     printf("BLOC %d:\n", k);
 
-    LFH* lfh = &zip.start[zip.lfh_off[k]];
+    LFH* lfh = (LFH*) (zip.start + zip.lfh_off[k]);
 
     unsigned int uncompressed_size = lfh->uncompressed_size;
     printf("UNCOMPRESSED SIZE: 0x%x\n", uncompressed_size);
