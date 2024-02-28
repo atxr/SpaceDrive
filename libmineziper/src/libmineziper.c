@@ -12,7 +12,7 @@ int get_uncompressed_size(zip zip)
   for (int i = 0; i < zip.entries; i++)
   {
     unsigned int file_size =
-        ((LFH*) zip.start + zip.lfh_off[i])->uncompressed_size;
+        ((LFH*) (zip.start + zip.lfh_off[i]))->uncompressed_size;
 
     if (size > MAX_INT / 2 && file_size > MAX_INT / 2)
     {
@@ -32,7 +32,7 @@ bool detect_overlaps(zip zip)
 
   for (int i = 0; i < zip.entries - 1; i++)
   {
-    LFH* lfh = (LFH*) zip.start + zip.lfh_off[i];
+    LFH* lfh = (LFH*) (zip.start + zip.lfh_off[i]);
     unsigned int lf_size = sizeof(LFH) + lfh->filename_length +
                            lfh->extraf_length + lfh->compressed_size;
 
@@ -60,12 +60,13 @@ bool scan_decoded_files(zip zip)
     if (lfh->filename_length != zip.cdh_filename_length[i])
     {
       fprintf(stderr, "[ERROR] Mismatch in CDH/LFH filename lengths.\n");
-        return true;
+      return true;
     }
 
     // Clean decoded struct and decode block if possible
     decoded->buffer = decoded->clean = decoded->size = 0;
 
+    // Stored block
     if (lfh->compression_method == COMP_NONE)
     {
       printf("[FILE %d] Scanning stored data...\n", i);
@@ -87,6 +88,7 @@ bool scan_decoded_files(zip zip)
       memcpy(decoded->buffer, block, decoded->size);
     }
 
+    // Deflate compression
     else if (lfh->compression_method == COMP_DEFLATE)
     {
       printf("[FILE %d] Scanning first block of DEFLATED data...\n", i);
@@ -180,10 +182,9 @@ bool scan_decoded_files(zip zip)
     {
       decoded->clean(decoded->buffer);
     }
-
-    free(decoded);
   }
 
+  free(decoded);
   return false;
 }
 

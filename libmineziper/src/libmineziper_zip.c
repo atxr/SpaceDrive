@@ -33,7 +33,8 @@ void get_eocd(zip* z)
 
       if (!z->lfh_off || !z->cdh_filename_length)
       {
-        fprintf(stderr, 
+        fprintf(
+            stderr,
             "[ERROR] Failed to allocate CDH/LFH buffer for %d entries\n",
             z->entries);
         exit(1);
@@ -87,7 +88,8 @@ char* decode_type1_block_vuln(bitstream* bs, char* decoded_data)
 
       if ((token = next_token(bs, tr_dist)) == END_OF_BLOCK)
       {
-        fprintf(stderr, "[ERROR] Got EndOfBlock when decoding distance token\n");
+        fprintf(
+            stderr, "[ERROR] Got EndOfBlock when decoding distance token\n");
         exit(1);
       }
 
@@ -127,7 +129,8 @@ char* decode_type1_block_v2(
 
       if ((token = next_token(bs, tr_dist)) == END_OF_BLOCK)
       {
-        fprintf(stderr, "[ERROR] Got EndOfBlock when decoding distance token\n");
+        fprintf(
+            stderr, "[ERROR] Got EndOfBlock when decoding distance token\n");
         exit(1);
       }
 
