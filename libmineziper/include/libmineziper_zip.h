@@ -25,8 +25,8 @@ typedef struct LFH
   int crc32;
   int compressed_size;
   int uncompressed_size;
-  short filename_length;
-  short extraf_length;
+  unsigned short filename_length;
+  unsigned short extraf_length;
 } LFH;
 
 typedef struct CDH
@@ -41,9 +41,9 @@ typedef struct CDH
   int crc32;
   int compressed_size;
   int uncompressed_size;
-  short filename_length;
-  short extraf_length;
-  short file_comment_length;
+  unsigned short filename_length;
+  unsigned short extraf_length;
+  unsigned short file_comment_length;
   short disk_number_start;
   short internal_file_attributes;
   int external_file_attributes;

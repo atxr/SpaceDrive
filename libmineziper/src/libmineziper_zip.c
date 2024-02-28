@@ -62,8 +62,9 @@ void get_cdh(zip* z)
     z->lfh_off[i] = cdh->off_lfh;
     z->cdh_filename_length[i] = cdh->filename_length;
 
-    cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + cdh->filename_length +
-                  cdh->extraf_length + cdh->file_comment_length);
+    unsigned short len = cdh->filename_length + cdh->extraf_length +
+                         cdh->file_comment_length;
+    cdh = (CDH*) (((char*) cdh) + sizeof(CDH) + len);
   }
 }
 
