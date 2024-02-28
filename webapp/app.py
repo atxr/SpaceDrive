@@ -35,7 +35,9 @@ def upload():
 
     try:
         recv_hash = s.recv(32)
-        status = unpack("B", s.recv(1))
+        status = unpack("B", s.recv(1))[0]
+
+        print(f"{status=}", file=sys.stdout)
 
         if (hash != recv_hash):
             message = 'Error: Mismatching sha256.'
