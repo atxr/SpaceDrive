@@ -49,6 +49,8 @@ bool detect_overlaps(zip zip)
 
 bool scan_decoded_files(zip zip)
 {
+  data* decoded = malloc(sizeof(data));
+
   for (int i = 0; i < zip.entries; i++)
   {
     LFH* lfh = (LFH*) (zip.start + zip.lfh_off[i]);
@@ -61,7 +63,7 @@ bool scan_decoded_files(zip zip)
         return true;
     }
 
-    data* decoded = malloc(sizeof(data));
+    // Clean decoded struct and decode block if possible
     decoded->buffer = decoded->clean = decoded->size = 0;
 
     if (lfh->compression_method == COMP_NONE)
