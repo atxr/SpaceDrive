@@ -1,6 +1,7 @@
 #include "libmineziper_bitstream.h"
 
 #include <assert.h>
+#include <stdio.h>
 
 unsigned int get_bits(bitstream* bs, unsigned int bit_num)
 {
