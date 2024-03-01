@@ -26,33 +26,54 @@ form {
     text-align: center;
 }
 
+
+
+
+
+
+
+/* Hide the default file input button */
 input[type="file"] {
-    margin-bottom: 20px; /* Adjust margin-bottom to create space below the input */
-    margin-top: 20px;    /* Add margin-top to create space above the input */
-    padding: 10px;
-    border: 2px solid #ddd;
+    display: none;
+}
+
+/* Style the custom file input button */
+.custom-file-upload {
+    border: 2px solid #00BFFF;
     border-radius: 5px;
-    width: 80%;
-    display: block;
-    margin: 0 auto;
-    background-color: #1a1a33;
-    color: #ffffff;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #00BFFF;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    margin-right: 10px;
 }
 
-input[type="file"]::placeholder {
-    color: #ffffff;
+.custom-file-upload:hover {
+    background-color: #00BFFF;
+    /* Light blue background on hover */
+    color: #FFFFFF;
+    /* White text color on hover */
 }
 
+.custom-file-upload:focus {
+    outline: none;
+    /* Remove default focus outline */
+    border-color: #1E90FF;
+    /* Darker blue border color on focus */
+}
 
 input[type="submit"] {
+    border: 2px solid #00BFFF;
+    border-radius: 5px;
+    padding: 10px 20px;
     background-color: #00ccff;
     color: #ffffff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
+    margin-left: 10px;
 }
 
 input[type="submit"]:hover {
@@ -70,9 +91,51 @@ input[type="submit"]:hover {
 }
 
 .note {
-    font-size: 14px;
-    color: #666;
-    margin-top: 10px;
+    font-size: 16px;
+    color: #FFFFFF;
+    /* White color for visibility */
+    margin-top: 20px;
     text-align: center;
     font-style: italic;
+    border: 2px solid #FFFFFF;
+    /* White border */
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent black background */
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+    /* Add shadow for depth */
+}
+
+.success {
+    background-color: #c9e6c9;
+    color: #008000;
+    border: 1px solid #4caf50;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* CSS for "go back to home page" link */
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #007bff;
+    /* Blue background color */
+    color: #fff;
+    /* White text color */
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.back-link:hover {
+    background-color: #0056b3;
+    /* Darker blue background color on hover */
+    color: #fff;
+    /* White text color on hover */
 }

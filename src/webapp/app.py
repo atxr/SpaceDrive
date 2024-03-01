@@ -17,10 +17,11 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
-        return 'No file part'
+        return render_template('upload_status.html', message='No file part', success=False)
+    
     file = request.files['file']
     if file.filename == '':
-        return 'No selected file'
+        return render_template('upload_status.html', message='No selected file', success=False)
     
     buf = file.read()
     hash = hashlib.sha256(buf).digest()
@@ -44,16 +45,19 @@ def upload():
         
         elif (status == 1):
             message = "Error: Potential virus found, cannot upload."
+            success = False
 
         else:
             message = 'File successfully uploaded'
             files.append({'filename': file.filename, 'content':buf})
+            success = True
 
     except:
         message = 'Error: Failed to scan file'
+        success = False
 
     s.close()
-    return message
+    return render_template('upload_status.html', message=message, success=success)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
