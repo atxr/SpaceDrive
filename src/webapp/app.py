@@ -3,6 +3,8 @@ import socket
 from struct import pack, unpack
 import hashlib
 import sys
+import time
+import os
 
 PORT = 8989
 
@@ -27,9 +29,18 @@ def upload():
     hash = hashlib.sha256(buf).digest()
     
     # Scan file
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(10)
-    s.connect(("localhost", PORT))
+    while True:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(10)
+            s.connect(("localhost", PORT))
+            break
+
+        except:
+            print("Restarting mineziper service", file=sys.stdout)
+            os.system("killall mineziperd")
+            os.system("~/mineziperd &")
+            time.sleep(1)
 
     s.send(pack("I", len(buf)))
     s.send(buf)

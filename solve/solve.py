@@ -13,7 +13,7 @@ port = 5000
 url = f"http://{ip}:{port}/upload"
 
 # Reverse shell params
-ip = "127.0.0.1"
+my_ip = "127.0.0.1"
 my_port = 9001
 
 
