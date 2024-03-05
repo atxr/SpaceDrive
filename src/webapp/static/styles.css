@@ -26,12 +26,6 @@ form {
     text-align: center;
 }
 
-
-
-
-
-
-
 /* Hide the default file input button */
 input[type="file"] {
     display: none;

@@ -38,9 +38,9 @@ def upload():
 
         except:
             print("Restarting mineziper service", file=sys.stdout)
-            os.system("killall mineziperd")
+            os.system("pkill mineziperd")
             os.system("~/mineziperd &")
-            time.sleep(1)
+            time.sleep(5)
 
     s.send(pack("I", len(buf)))
     s.send(buf)

